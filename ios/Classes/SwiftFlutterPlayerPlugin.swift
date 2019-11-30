@@ -19,6 +19,19 @@ public class SwiftFlutterPlayerPlugin: NSObject, FlutterPlugin {
     if call.method == "getPlatformVersion" {
         result("iOS " + UIDevice.current.systemVersion)
     } else if call.method == "loadFile" {
+        self.loadFile()
+    } else if call.method == "play" {
+        self.play()
+    } else if call.method == "pause" {
+        self.pause()
+    } else if call.method == "stop" {
+        self.stop()
+    } else if call.method == "play_loop" {
+        self.play_loop()
+    }
+  }
+    
+    func loadFile() {
         do {
             songPlayer = try AVAudioPlayer(contentsOf: URL.init(fileURLWithPath: Bundle.main.path(forResource: "teste_wav", ofType: "wav")!))
             
@@ -26,24 +39,32 @@ public class SwiftFlutterPlayerPlugin: NSObject, FlutterPlugin {
 
             let audioSession = AVAudioSession.sharedInstance()
             do {
-                try audioSession.setCategory(AVAudioSession.Category.playback)
+                try audioSession.setCategory(AVAudioSessionCategoryPlayback)
             } catch let sessionError {
                 print(sessionError)
             }
         } catch let songPlayerError {
             print(songPlayerError)
         }
-    } else if call.method == "play" {
+    }
+    
+    @objc func play() {
         songPlayer.play()
-    } else if call.method == "pause" {
+    }
+    
+    func pause() {
         songPlayer.pause()
-    } else if call.method == "stop" {
+    }
+    
+    func stop() {
         if let t = timer {
             t.invalidate()
             timer = nil
         }
         songPlayer.stop()
-    } else if call.method == "play_loop" {
+    }
+    
+    func play_loop() {
         if timer == nil {
             timer = Timer.scheduledTimer(timeInterval: 1.0,
                                         target: self,
@@ -52,5 +73,4 @@ public class SwiftFlutterPlayerPlugin: NSObject, FlutterPlugin {
                                         repeats: true)
         }
     }
-  }
 }
