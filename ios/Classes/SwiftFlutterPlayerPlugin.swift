@@ -49,6 +49,7 @@ public class SwiftFlutterPlayerPlugin: NSObject, FlutterPlugin {
     }
     
     @objc func play() {
+        songPlayer.numberOfLoops = 0
         songPlayer.play()
     }
     
@@ -57,20 +58,11 @@ public class SwiftFlutterPlayerPlugin: NSObject, FlutterPlugin {
     }
     
     func stop() {
-        if let t = timer {
-            t.invalidate()
-            timer = nil
-        }
         songPlayer.stop()
     }
     
     func play_loop() {
-        if timer == nil {
-            timer = Timer.scheduledTimer(timeInterval: 1.0,
-                                        target: self,
-                                        selector: #selector(self.play),
-                                        userInfo: [ "foo" : "bar" ],
-                                        repeats: true)
-        }
+        songPlayer.numberOfLoops = -1
+        songPlayer.play()
     }
 }
